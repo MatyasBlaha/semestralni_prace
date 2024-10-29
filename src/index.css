@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    a {
+        @apply no-underline
+    }
+}
+
+.link {
+    @apply text-sm sm:text-base md:text-lg hover:text-stone-600 block w-full px-4 py-2 whitespace-nowrap
+}
