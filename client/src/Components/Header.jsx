@@ -11,7 +11,6 @@ export default function Header(){
         <div className='flex flex-col justify-center items-center my-8'>
            <h1 className='text-4xl'>Welcome, {user.username}</h1>
             <SetUsername />
-            <p>Choose app</p>
         </div>
     )
 }

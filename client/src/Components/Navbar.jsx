@@ -1,13 +1,8 @@
 import React, { useContext, useState } from "react";
 import { UserContext } from "../store/user-context.jsx";
 import LinkButton from './UI/LinkButton';
-import { routesData } from '../routesData.jsx';  // Adjust this import to match your file structure
-
-// Function to get the path by route name
-function getPathByName (name) {
-    const route = routesData.find((route) => route.name === name);
-    return route ? route.path : '/';
-};
+import {getPathByName} from "../utils/getPathByName.jsx";
+import {routesData} from "../data/routesData.jsx";
 
 export default function Navbar() {
     const { user } = useContext(UserContext);
@@ -16,6 +11,8 @@ export default function Navbar() {
     function handleClick() {
         setIsClicked((prevIsClicked) => !prevIsClicked);
     }
+
+    const navRoutes = routesData.filter(route => route.id.startsWith('nav'))
 
     return (
         <div className='w-full flex justify-between bg-gray-200 p-4'>
@@ -42,10 +39,13 @@ export default function Navbar() {
             {isClicked && (
                 <div className="absolute right-3 mt-11 w-48 bg-white shadow-lg rounded-md">
                     <ul className="py-2">
-                        <li className="px-4 py-2 hover:bg-gray-100">
-                            <LinkButton to={getPathByName("Profile")}>Profile</LinkButton>
-                        </li>
-                        {/* Add more menu items as needed */}
+                        {navRoutes.map((app) => (
+                            <li key={app.id} className="px-4 py-2 hover:bg-gray-100">
+                                <LinkButton to={getPathByName(app.id)}>
+                                    {app.name}
+                                </LinkButton>
+                            </li>
+                        ))}
                     </ul>
                 </div>
             )}
