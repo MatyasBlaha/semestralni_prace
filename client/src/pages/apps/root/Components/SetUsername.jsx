@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
-import { UserContext } from "../store/user-context.jsx";
-import useModal from "../hooks/useModal"; // Import the custom hook
-import Modal from './UI/Modal.jsx';
+import { UserContext } from "../../../../store/user-context.jsx";
+import useModal from "../../../../hooks/useModal.jsx"; // Import the custom hook
+import Modal from '../../../../Components/UI/Modal.jsx';
 
 export default function SetUsername() {
     const { user, setUsername } = useContext(UserContext);

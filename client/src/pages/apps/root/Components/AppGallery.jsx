@@ -1,8 +1,8 @@
 // AppGallery.jsx
 import React from 'react';
-import { getPathByName } from "../utils/getPathByName.jsx";
-import LinkButton from "./UI/LinkButton.jsx";
-import { routesData } from '../data/routesData.jsx';
+import { getPathByName } from "../../../../utils/getPathByName.jsx";
+import LinkButton from "../../../../Components/UI/LinkButton.jsx";
+import { routesData } from '../../../../data/routesData.jsx';
 
 export default function AppGallery() {
     const appRoutes = routesData.filter(route => route.id.startsWith('app'));

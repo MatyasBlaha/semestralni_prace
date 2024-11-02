@@ -1,9 +1,9 @@
 // src/routes/routesData.js
 import React from 'react';
 
-const Root = React.lazy(() => import('../routes/root.jsx'));
+const Root = React.lazy(() => import('../pages/apps/root/root.jsx'));
 const ErrorPage = React.lazy(() => import('../error-page.jsx'));
-const ChangeUsernamePage = React.lazy(() => import('../pages/Profile.jsx'));
+const ChangeUsernamePage = React.lazy(() => import('../pages/apps/profile/Profile.jsx'));
 const Recipes = React.lazy(() => import('../pages/apps/recipes/Recipes.jsx'));
 const RecipesDetails = React.lazy(() => import('../pages/apps/recipes/Components/RecipeDetails.jsx'))
 

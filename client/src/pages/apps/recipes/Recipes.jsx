@@ -1,35 +1,70 @@
-import {useMemo, useState} from 'react'
+import {useState, useEffect, useCallback, useMemo} from 'react'
 
 import Navbar from "../../../Components/Navbar.jsx";
-import LinkButton from "../../../Components/UI/LinkButton.jsx";
 
 import {usePageTitle} from "../../../hooks/usePageTitle.jsx";
-import useDebounce from "../../../hooks/useDebounce.jsx";
-import {getPathByName} from "../../../utils/getPathByName.jsx";
-
-import {RECIPES} from "./data/recipes.js";
 
 import RecipeCard from "./Components/RecipeCard.jsx";
+import {fetchAvailableRecipes} from "../../../http.js";
+import Error from "../../../Components/Error.jsx";
+import useDebounce from "../../../hooks/useDebounce.jsx";
 
 
 const recipesPerPage = 10
 
 export default function Recipes () {
     usePageTitle('appRecipes')
+    const [isFetching, setIsFetching] = useState(false)
+    const [availableRecipes, setAvailableRecipes] = useState([])
+    const [error, setError] = useState();
 
+    const [searchItem, setSearchItem] = useState('')
     const [currentPage, setCurrentPage] = useState(1);
-    const [searchTerm, setSearchTerm] = useState('');
-    const debouncedSearchTerm = useDebounce(searchTerm, 700);
+    const debouncedSearchTerm = useDebounce(searchItem, 700);
 
-    const loadMoreRecipes = () => setCurrentPage(prev => prev + 1);
+    const loadMoreRecipes = useCallback(() => setCurrentPage(prev => prev + 1), []);
+
+    useEffect(() => {
+        setIsFetching(true)
+        async function fetchRecipes() {
+            try{
+                const recipes = await fetchAvailableRecipes()
+                setAvailableRecipes(recipes)
+                setIsFetching(false)
+            } catch (err){
+                setError({
+                    message: err.message || 'Could not fetch recipes, please try again later!',
+                    error: true
+                });
+                setIsFetching(false)
+            }
+        }
+
+        fetchRecipes();
+    }, []);
+
+
 
     const filteredItems = useMemo(() => {
-        return RECIPES.filter((recipe) => recipe.title.toLowerCase().includes(searchTerm.toLowerCase()));
-    }, [debouncedSearchTerm]);
+        if(!debouncedSearchTerm) return availableRecipes;
+        return availableRecipes.filter(recipe =>
+            recipe.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+        );
+    }, [debouncedSearchTerm, availableRecipes]);
 
-    const paginatedRecipes = filteredItems.slice(0, recipesPerPage * currentPage);
+    const paginatedRecipes = useMemo(() => {
+        return filteredItems.slice(0, recipesPerPage * currentPage)
+    }, [filteredItems, currentPage]);
 
+
+
+    console.log(filteredItems)
     console.log(paginatedRecipes)
+
+    if(error){
+        return <Error title='An error has ocured' message={error.message}></Error>
+    }
+
 
     return (
         <>
@@ -37,20 +72,27 @@ export default function Recipes () {
             <div className='w-3/4 mx-auto'>
                 <div className='flex'>
                     <h2 className='mb-8'>RECIPES APP</h2>
-                    <div>
-                        <input
-                            type="text"
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder='searh'
-                        />
-                    </div>
+                </div>
+                <div>
+                    <input
+                        type="text"
+                        placeholder='Search...'
+                        className='border-2'
+                        onChange={(e) => {
+                            setSearchItem(e.target.value)
+                            setCurrentPage(1)
+                        }}
+                    />
                 </div>
                 <div className='flex flex-wrap'>
-                    {paginatedRecipes.map((recipe) => (
-                        <RecipeCard recipe={recipe} key={recipe.id}/>
-                    ))}
+                    <RecipeCard
+                        recipes={paginatedRecipes}
+                        isLoading={isFetching}
+                        loadingText='Loading recipes...'
+                        fallbackText='No recipes available.'
+                    />
                 </div>
-                {paginatedRecipes.length < RECIPES.length && (
+                {paginatedRecipes.length < filteredItems.length && (
                     <button onClick={loadMoreRecipes} className='mt-2 p-2'>
                         Load More
                     </button>

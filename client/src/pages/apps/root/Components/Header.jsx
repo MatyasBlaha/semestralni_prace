@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import {UserContext} from "../store/user-context.jsx";
+import {UserContext} from "../../../../store/user-context.jsx";
 
 import SetUsername from "./SetUsername.jsx";
 

@@ -1,7 +1,7 @@
-import Modal from "./UI/Modal.jsx";
+import Modal from "../../../../Components/UI/Modal.jsx";
 import {useCallback, useContext, useState} from "react";
-import {UserContext} from "../store/user-context.jsx";
-import useModal from "../hooks/useModal.jsx";
+import {UserContext} from "../../../../store/user-context.jsx";
+import useModal from "../../../../hooks/useModal.jsx";
 
 export default function SetChangeName(){
 
